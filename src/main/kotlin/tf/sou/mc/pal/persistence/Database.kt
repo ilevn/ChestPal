@@ -10,5 +10,7 @@ interface Database {
     /**
      * Save locations for a given [Material].
      */
-    fun saveMaterialLocations(material: Material, locations: List<Location>)
+    fun saveMaterialLocation(material: Material, location: Location)
+
+
 }

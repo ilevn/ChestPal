@@ -8,6 +8,25 @@ author: Nils T.
 commands:
   chestpal:
     description: Test command for now
-    usage: /<command>
+    usage: /chestpal
     permission: chestpal.dirttest
+
+  chesttools:
+    description: Get receiver and sender tools
+    usage: /chesttools
+    permission: chestpal.chesttools
+
+permissions:
+  chestpal.dirttest:
+    description: Allows access to test command
+    default: op
+
+  chestpal.chesttools:
+    description: Allows access to chesttool command
+    default: op
+
+  chestpal.*:
+    description: Wildcard access to all chestpal commands
+    default: op
+
 
