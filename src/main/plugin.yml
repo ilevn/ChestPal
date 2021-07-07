@@ -1,0 +1,13 @@
+name: ChestPal
+main: tf.sou.mc.pal.ChestPal
+version: 0.1.0
+api-version: 1.17
+author: Nils T.
+
+
+commands:
+  chestpal:
+    description: Test command for now
+    usage: /<command>
+    permission: chestpal.dirttest
+
