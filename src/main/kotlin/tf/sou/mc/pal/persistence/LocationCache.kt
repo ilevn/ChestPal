@@ -16,11 +16,11 @@
  */
 package tf.sou.mc.pal.persistence
 
-import java.io.File
 import org.bukkit.Location
 import org.bukkit.Material
 import tf.sou.mc.pal.domain.MaterialLocation
 import tf.sou.mc.pal.domain.ReceiverChests
+import java.io.File
 
 class LocationCache(receiverChests: ReceiverChests, senderLocations: List<Location>) {
     private val chestLocations = receiverChests

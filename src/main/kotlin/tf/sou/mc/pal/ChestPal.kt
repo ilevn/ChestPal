@@ -38,6 +38,7 @@ class ChestPal : JavaPlugin() {
             return
         }
 
+        saveDefaultConfig()
         database = JsonDatabase(dataFolder)
         server.pluginManager.registerEvents(ChestListener(this), this)
         getCommand("chestpal")?.setExecutor(BaseCommand())

@@ -24,9 +24,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import tf.sou.mc.pal.ChestPal
 import tf.sou.mc.pal.domain.HoeType
-import tf.sou.mc.pal.utils.asItemStacks
-import tf.sou.mc.pal.utils.countAvailableSpace
-import tf.sou.mc.pal.utils.resolveContainer
+import tf.sou.mc.pal.domain.ItemFrameResult
+import tf.sou.mc.pal.utils.*
 
 /**
  * Listeners for chest based events.
@@ -34,14 +33,31 @@ import tf.sou.mc.pal.utils.resolveContainer
 class ChestListener(private val pal: ChestPal) : Listener {
     @EventHandler
     fun onInventoryCloseEvent(event: InventoryCloseEvent) {
-        // TODO: Prevent users from placing other items in rec. boxes.
         val inventory = event.inventory
-        if (inventory.location == null || !pal.database.isSenderChest(inventory.location)) {
+        val location = inventory.location ?: return
+
+        if (!pal.database.isRegisteredChest(location)) {
             return
         }
 
-        val senderChest =
-            inventory.location?.resolveContainer() ?: error("This should never happen")
+        val eventChest = location.resolveContainer() ?: error("This should never happen")
+        if (pal.database.isReceiverChest(location)) {
+            // This could be a cache lookup in the future.
+            val item = location.findItemFrame() as? ItemFrameResult.Found ?: return
+            val allowedItem = item.frame.item.type
+            val badItems = inventory.findBadItems(allowedItem)
+            if (badItems.isEmpty()) {
+                return
+            }
+            // Clean up.
+            badItems.forEach {
+                inventory.remove(it)
+                event.player.inventory.addItem(it)
+            }
+            event.player.sendMessage("This receiver chest only takes $allowedItem!")
+            return
+        }
+
         val chestItems = inventory.contents
             .filterNotNull().groupingBy { it.type }
             .fold(0) { acc, stack -> acc + stack.amount }
@@ -65,13 +81,14 @@ class ChestListener(private val pal: ChestPal) : Listener {
                 transportAmount -= allowedToAdd
             }
 
-            senderChest.inventory.remove(material)
+            eventChest.inventory.remove(material)
             if (transportAmount > 0) {
                 // Re-add leftover items.
-                transportAmount.asItemStacks(material).forEach { senderChest.inventory.addItem(it) }
+                transportAmount.asItemStacks(material).forEach { eventChest.inventory.addItem(it) }
             }
 
-            event.player.sendMessage("Moved ${amount - transportAmount} ${material.name}s!")
+            (amount - transportAmount).takeIf { it > 0 }
+                ?.let { event.player.sendMessage("Moved $it ${material.name}s!") }
         }
     }
 
