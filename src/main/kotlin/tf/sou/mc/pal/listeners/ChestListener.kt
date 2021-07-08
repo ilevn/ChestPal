@@ -18,13 +18,15 @@ import tf.sou.mc.pal.utils.resolveContainer
 class ChestListener(private val pal: ChestPal) : Listener {
     @EventHandler
     fun onInventoryCloseEvent(event: InventoryCloseEvent) {
+        // TODO: Prevent users from placing other items in rec. boxes.
         val inventory = event.inventory
         if (inventory.location == null || !pal.database.isSenderChest(inventory.location)) {
             return
         }
 
         val senderChest = inventory.location?.resolveContainer() ?: error("This should never happen")
-        val chestItems = inventory.contents.filterNotNull().groupingBy { it.type }
+        val chestItems = inventory.contents
+            .filterNotNull().groupingBy { it.type }
             .fold(0) { acc, stack -> acc + stack.amount }
 
         for ((material, amount) in chestItems) {
@@ -36,9 +38,9 @@ class ChestListener(private val pal: ChestPal) : Listener {
 
             val iterator = receiverChests.iterator()
             while (transportAmount > 0 && iterator.hasNext()) {
-                val chest = iterator.next().resolveContainer()
+                val chest = iterator.next().resolveContainer() ?: error("Unable to find receiver chest!")
                 // Check how much space this container has
-                // and calculate how much we are allowed to add.
+                // and calculate how many items we are allowed to add.
                 val available = chest.countAvailableSpace(material)
                 val allowedToAdd = available.coerceAtMost(transportAmount)
                 allowedToAdd.asItemStacks(material).forEach { chest.inventory.addItem(it) }
@@ -47,7 +49,7 @@ class ChestListener(private val pal: ChestPal) : Listener {
 
             senderChest.inventory.remove(material)
             if (transportAmount > 0) {
-                // We couldn't port everything over to other chests.
+                // Re-add leftover items.
                 transportAmount.asItemStacks(material).forEach { senderChest.inventory.addItem(it) }
             }
 
@@ -62,14 +64,15 @@ class ChestListener(private val pal: ChestPal) : Listener {
         if (event.clickedBlock?.type != Material.CHEST) {
             return
         }
-
         hoeType.act(event, pal)
     }
 
     @EventHandler
-    fun onBlockBreakEvent(e: BlockBreakEvent) {
-        // TODO: prevent breaking of chests
+    fun onBlockBreakEvent(event: BlockBreakEvent) {
+        if (pal.database.isRegisteredChest(event.block.location)) {
+            event.player.sendMessage("You cannot break registered chests at the moment!")
+            // Prevent players from breaking registered chests.
+            event.isCancelled = true
+        }
     }
-
-    // TODO: Prevent users from placing other items in rec. boxes.
 }
