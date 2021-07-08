@@ -19,9 +19,12 @@ package tf.sou.mc.pal.utils
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.Material.AIR
+import org.bukkit.Material.CHEST
 import org.bukkit.block.Container
 import org.bukkit.entity.ItemFrame
 import org.bukkit.event.player.PlayerEvent
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import tf.sou.mc.pal.domain.ItemFrameResult
 
@@ -34,16 +37,20 @@ fun Location.toVectorString(): String = toVector().toString()
 fun PlayerEvent.reply(content: String) = player.sendMessage(content)
 
 fun Location.findItemFrame(): ItemFrameResult {
-    val possibleFrames = getNearbyEntitiesByType(ItemFrame::class.java, 3.0)
+    val possibleFrames = getNearbyEntitiesByType(ItemFrame::class.java, 0.5)
     if (possibleFrames.isEmpty()) {
         // oh oh.
         return ItemFrameResult.NoFrame
     }
-    // TODO: Location check
-    // what happens if a sender chest is adjacent to two+ other chests with item frames
-    val firstFrame: ItemFrame = possibleFrames.toList()[0]
-    if (firstFrame.location.block.getRelative(firstFrame.attachedFace).type == Material.CHEST) {
-        return ItemFrameResult.Found(firstFrame)
+    val frames = possibleFrames.toList()
+    val frame = frames
+        .minByOrNull { it.location.toBlockLocation().distance(this) }
+        ?: error("This should never happen")
+
+    if (frame.location.block.getRelative(frame.attachedFace).type == CHEST
+        && frame.item.type != AIR
+    ) {
+        return ItemFrameResult.Found(frame)
     }
 
     return ItemFrameResult.NoItem
@@ -62,4 +69,8 @@ fun Int.asItemStacks(material: Material): List<ItemStack> {
 fun Container.countAvailableSpace(item: Material): Int {
     val maxSize = item.maxStackSize
     return inventory.contents.sumOf { if (it == null) maxSize else maxSize - it.amount }
+}
+
+fun Inventory.findBadItems(allowed: Material): List<ItemStack> {
+    return contents.filter { it != null && it.type != allowed }
 }
