@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version "1.5.0"
     id("com.diffplug.spotless") version "5.14.1"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = "tf.sou.mc"
@@ -13,16 +14,11 @@ repositories {
     maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
 }
 
-val exposedVersion: String by project
-
 dependencies {
     testImplementation(kotlin("test-junit5"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
-    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
 }
 
 tasks.test {
