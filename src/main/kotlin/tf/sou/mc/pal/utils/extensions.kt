@@ -30,8 +30,8 @@ fun Location.findItemFrame(): ItemFrameResult {
         // oh oh.
         return ItemFrameResult.NoFrame
     }
-
     // TODO: Location check
+    // what happens if a sender chest is adjacent to two+ other chests with item frames
     val firstFrame: ItemFrame = possibleFrames.toList()[0]
     if (firstFrame.location.block.getRelative(firstFrame.attachedFace).type == Material.CHEST) {
         return ItemFrameResult.Found(firstFrame)
@@ -40,14 +40,15 @@ fun Location.findItemFrame(): ItemFrameResult {
     return ItemFrameResult.NoItem
 }
 
-fun Location.resolveContainer(): Container {
-    return world.getBlockAt(this).state as Container
+fun Location.resolveContainer(): Container? {
+    return world.getBlockAt(this).state as? Container
 }
 
 
 fun Int.asItemStacks(material: Material): List<ItemStack> {
-    val fullStacks = this / 64
-    return (1..fullStacks).map { ItemStack(material, 64) } + ItemStack(material, this % 64)
+    val size = material.maxStackSize
+    val fullStacks = this / size
+    return (1..fullStacks).map { ItemStack(material, size) } + ItemStack(material, this % size)
 }
 
 fun Container.countAvailableSpace(item: Material): Int {
