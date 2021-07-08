@@ -1,3 +1,19 @@
+/*
+ * This file is part of ChestPal.
+ *
+ * ChestPal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ChestPal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ChestPal.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package tf.sou.mc.pal.commands
 
 import org.bukkit.command.Command
@@ -10,7 +26,12 @@ import tf.sou.mc.pal.utils.asSingleItem
 import tf.sou.mc.pal.utils.asTextComponent
 
 class ChestToolsCommand : CommandExecutor {
-    override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+    override fun onCommand(
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
+    ): Boolean {
         if (sender !is Player) {
             sender.sendMessage("You need to invoke this command from a player account!")
             return false

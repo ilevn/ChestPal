@@ -1,3 +1,19 @@
+/*
+ * This file is part of ChestPal.
+ *
+ * ChestPal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ChestPal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ChestPal.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package tf.sou.mc.pal.listeners
 
 import org.bukkit.Material
@@ -24,7 +40,8 @@ class ChestListener(private val pal: ChestPal) : Listener {
             return
         }
 
-        val senderChest = inventory.location?.resolveContainer() ?: error("This should never happen")
+        val senderChest =
+            inventory.location?.resolveContainer() ?: error("This should never happen")
         val chestItems = inventory.contents
             .filterNotNull().groupingBy { it.type }
             .fold(0) { acc, stack -> acc + stack.amount }
@@ -38,7 +55,8 @@ class ChestListener(private val pal: ChestPal) : Listener {
 
             val iterator = receiverChests.iterator()
             while (transportAmount > 0 && iterator.hasNext()) {
-                val chest = iterator.next().resolveContainer() ?: error("Unable to find receiver chest!")
+                val chest =
+                    iterator.next().resolveContainer() ?: error("Unable to find receiver chest!")
                 // Check how much space this container has
                 // and calculate how many items we are allowed to add.
                 val available = chest.countAvailableSpace(material)
@@ -56,7 +74,6 @@ class ChestListener(private val pal: ChestPal) : Listener {
             event.player.sendMessage("Moved ${amount - transportAmount} ${material.name}s!")
         }
     }
-
 
     @EventHandler
     fun onPlayerInteractEntityEvent(event: PlayerInteractEvent) {

@@ -14,12 +14,3 @@
  * You should have received a copy of the GNU General Public License
  * along with ChestPal.  If not, see <https://www.gnu.org/licenses/>.
  */
-package tf.sou.mc.pal.domain
-
-import org.bukkit.entity.ItemFrame
-
-sealed class ItemFrameResult {
-    object NoItem : ItemFrameResult()
-    object NoFrame : ItemFrameResult()
-    data class Found(val frame: ItemFrame) : ItemFrameResult()
-}
