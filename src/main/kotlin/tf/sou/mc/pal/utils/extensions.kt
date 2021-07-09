@@ -55,13 +55,12 @@ fun PlayerEvent.reply(content: String) = player.sendMessage(content)
  * _Note: This performs an expensive distance calculation to find the correct chest._
  */
 fun Location.findItemFrame(): ItemFrameResult {
-    val possibleFrames = getNearbyEntitiesByType(ItemFrame::class.java, 2.0)
-    // FIXME: Chests without item frames are going to steal the neighboring item frame.
-    if (possibleFrames.isEmpty()) {
+    val box = block.boundingBox.expand(0.1)
+    val frames = world.getNearbyEntities(box).filterIsInstance<ItemFrame>()
+    if (frames.isEmpty()) {
         // oh oh.
         return ItemFrameResult.NoFrame
     }
-    val frames = possibleFrames.toList()
     val frame = frames
         .minByOrNull { it.location.toBlockLocation().distance(this) }
         ?: error("This should never happen")
