@@ -48,12 +48,14 @@ class ChestListener(private val pal: ChestPal) : Listener {
         val inventory = event.inventory
         val location = inventory.location ?: return
 
-        if (!pal.database.isRegisteredChest(location)) {
+        val chestProxy = inventory.toChestInventoryProxy()
+        if (!chestProxy.isRegistered(database = pal.database)) {
             return
         }
 
         val eventChest = location.resolveContainer() ?: error("This should never happen")
-        if (pal.database.isReceiverChest(location)) {
+        val eventInventory = eventChest.inventory.toChestInventoryProxy()
+        if (eventInventory.isReceiver(database = pal.database)) {
             handleClosedReceiverChest(location, inventory, event)
             return
         }
@@ -109,7 +111,7 @@ class ChestListener(private val pal: ChestPal) : Listener {
             inventory.remove(it)
             event.player.inventory.addItem(it)
         }
-        event.player.sendMessage("This receiver chest only takes $allowedItem!")
+        event.player.sendMessage("This receiver chest only takes ${allowedItem.toPrettyString()}!")
     }
 
     @EventHandler
@@ -119,11 +121,18 @@ class ChestListener(private val pal: ChestPal) : Listener {
             return
         }
         hoeType.act(event, pal)
+        event.isCancelled = true
     }
 
     @EventHandler
     fun onBlockBreakEvent(event: BlockBreakEvent) {
-        if (pal.database.isRegisteredChest(event.block.location)) {
+        if (event.block.type != Material.CHEST) {
+            return
+        }
+
+        val container = event.block.location.resolveContainer() ?: return
+        val proxy = container.inventory.toChestInventoryProxy()
+        if (proxy.isRegistered(pal.database)) {
             conversationFactory
                 .withInitialSessionData(mapOf("block" to event.block))
                 .buildConversation(event.player)

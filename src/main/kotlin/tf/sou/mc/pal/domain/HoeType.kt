@@ -21,10 +21,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import tf.sou.mc.pal.ChestPal
 import tf.sou.mc.pal.RECEIVER_MATERIAL
 import tf.sou.mc.pal.SENDER_MATERIAL
-import tf.sou.mc.pal.utils.asTextComponent
-import tf.sou.mc.pal.utils.findItemFrame
-import tf.sou.mc.pal.utils.reply
-import tf.sou.mc.pal.utils.toVectorString
+import tf.sou.mc.pal.utils.*
 
 /**
  * Stateless actor enum for [Material] based interactions with a chest.
@@ -49,12 +46,12 @@ enum class HoeType(private val material: Material) : EventActor<PlayerInteractEv
     SENDER(SENDER_MATERIAL) {
         override fun act(event: PlayerInteractEvent, pal: ChestPal) {
             val chestLocation = event.clickedBlock?.location ?: return
-            if (pal.database.isRegisteredChest(chestLocation)) {
+            val container = chestLocation.resolveContainer() ?: return
+            if (container.inventory.toChestInventoryProxy().isRegistered(pal.database)) {
                 event.reply("This chest is already a registered!")
                 return
             }
-            event.player
-                .sendMessage("Saving sender chest at location ${chestLocation.toVectorString()}!")
+            event.reply("Saving sender chest at location ${chestLocation.toVectorString()}!")
             pal.database.saveSenderLocation(chestLocation)
         }
     },
@@ -66,7 +63,8 @@ enum class HoeType(private val material: Material) : EventActor<PlayerInteractEv
     RECEIVER(RECEIVER_MATERIAL) {
         override fun act(event: PlayerInteractEvent, pal: ChestPal) {
             val chestLocation = event.clickedBlock?.location ?: return
-            if (pal.database.isRegisteredChest(chestLocation)) {
+            val container = chestLocation.resolveContainer() ?: return
+            if (container.inventory.toChestInventoryProxy().isRegistered(pal.database)) {
                 // Either a receiver or sender chest.
                 event.reply("This chest is already registered!")
                 return
@@ -78,7 +76,7 @@ enum class HoeType(private val material: Material) : EventActor<PlayerInteractEv
                 is ItemFrameResult.Found -> {
                     val type = result.frame.item.type
                     pal.database.saveMaterialLocation(type, chestLocation)
-                    event.reply("Saved new item chest for type $type!")
+                    event.reply("Saved new item chest for type ${type.toPrettyString()}!")
                 }
             }
         }

@@ -19,13 +19,13 @@ package tf.sou.mc.pal.utils
 import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.Material.AIR
 import org.bukkit.Material.CHEST
 import org.bukkit.block.Container
 import org.bukkit.entity.ItemFrame
 import org.bukkit.event.player.PlayerEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import tf.sou.mc.pal.domain.ChestInventoryProxy
 import tf.sou.mc.pal.domain.ItemFrameResult
 
 /**
@@ -66,7 +66,7 @@ fun Location.findItemFrame(): ItemFrameResult {
         ?: error("This should never happen")
 
     if (frame.location.block.getRelative(frame.attachedFace).type == CHEST &&
-        frame.item.type != AIR
+        !frame.item.type.isEmpty
     ) {
         return ItemFrameResult.Found(frame)
     }
@@ -107,3 +107,16 @@ fun Container.countAvailableSpace(item: Material): Int {
 fun Inventory.findBadItems(allowed: Material): List<ItemStack> {
     return contents.filter { it != null && it.type != allowed }
 }
+
+/**
+ * Transforms an enum uppercase name into its title case version.
+ */
+fun Enum<*>.toPrettyString(): String {
+    val split = name.lowercase().split("_")
+    return split.joinToString(" ") { it.replaceFirstChar(Char::uppercase) }
+}
+
+/**
+ * Converts this inventory to a proxied, double-chest aware version.
+ */
+fun Inventory.toChestInventoryProxy() = ChestInventoryProxy(this)
