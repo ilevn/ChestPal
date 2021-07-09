@@ -78,7 +78,6 @@ fun Location.findItemFrame(): ItemFrameResult {
  * Resolves this location to a nullable [Container].
  */
 fun Location.resolveContainer(): Container? {
-    // TODO: Account for double chests
     return world.getBlockAt(this).state as? Container
 }
 
