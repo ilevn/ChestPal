@@ -16,4 +16,7 @@
  */
 package tf.sou.mc.pal.domain
 
+/**
+ * Storage class for a list of [MaterialLocation]
+ */
 data class ReceiverChests(val data: List<MaterialLocation>)

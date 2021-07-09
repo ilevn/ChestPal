@@ -16,12 +16,14 @@
  */
 package tf.sou.mc.pal.listeners
 
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.Inventory
 import tf.sou.mc.pal.ChestPal
 import tf.sou.mc.pal.domain.HoeType
 import tf.sou.mc.pal.domain.ItemFrameResult
@@ -42,19 +44,7 @@ class ChestListener(private val pal: ChestPal) : Listener {
 
         val eventChest = location.resolveContainer() ?: error("This should never happen")
         if (pal.database.isReceiverChest(location)) {
-            // This could be a cache lookup in the future.
-            val item = location.findItemFrame() as? ItemFrameResult.Found ?: return
-            val allowedItem = item.frame.item.type
-            val badItems = inventory.findBadItems(allowedItem)
-            if (badItems.isEmpty()) {
-                return
-            }
-            // Clean up.
-            badItems.forEach {
-                inventory.remove(it)
-                event.player.inventory.addItem(it)
-            }
-            event.player.sendMessage("This receiver chest only takes $allowedItem!")
+            handleClosedReceiverChest(location, inventory, event)
             return
         }
 
@@ -90,6 +80,26 @@ class ChestListener(private val pal: ChestPal) : Listener {
             (amount - transportAmount).takeIf { it > 0 }
                 ?.let { event.player.sendMessage("Moved $it ${material.name}s!") }
         }
+    }
+
+    private fun handleClosedReceiverChest(
+        location: Location,
+        inventory: Inventory,
+        event: InventoryCloseEvent
+    ) {
+        // This could be a cache lookup in the future.
+        val item = location.findItemFrame() as? ItemFrameResult.Found ?: return
+        val allowedItem = item.frame.item.type
+        val badItems = inventory.findBadItems(allowedItem)
+        if (badItems.isEmpty()) {
+            return
+        }
+        // Clean up.
+        badItems.forEach {
+            inventory.remove(it)
+            event.player.inventory.addItem(it)
+        }
+        event.player.sendMessage("This receiver chest only takes $allowedItem!")
     }
 
     @EventHandler

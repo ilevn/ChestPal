@@ -19,6 +19,13 @@ package tf.sou.mc.pal.domain
 import org.bukkit.event.Event
 import tf.sou.mc.pal.ChestPal
 
+/**
+ * Actor interface for [events][Event].
+ */
 interface EventActor<E : Event> {
+    /**
+     * Respond to an [event][E] with an action.
+     * This has access to the [ChestPal] plugin state.
+     */
     fun act(event: E, pal: ChestPal)
 }

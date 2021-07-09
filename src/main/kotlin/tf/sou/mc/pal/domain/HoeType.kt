@@ -26,8 +26,14 @@ import tf.sou.mc.pal.utils.findItemFrame
 import tf.sou.mc.pal.utils.reply
 import tf.sou.mc.pal.utils.toVectorString
 
+/**
+ * Stateless actor enum for [Material] based interactions with a chest.
+ */
 @Suppress("unused")
 enum class HoeType(private val material: Material) : EventActor<PlayerInteractEvent> {
+    /**
+     * Debug interaction with a chest.
+     */
     DEBUG(Material.DIAMOND_HOE) {
         override fun act(event: PlayerInteractEvent, pal: ChestPal) {
             if (event.player.displayName().contains("0x1".asTextComponent())) {
@@ -35,6 +41,11 @@ enum class HoeType(private val material: Material) : EventActor<PlayerInteractEv
             }
         }
     },
+
+    /**
+     * Sender interaction with a chest.
+     * This is triggered whenever a new sender chest is registered.
+     */
     SENDER(SENDER_MATERIAL) {
         override fun act(event: PlayerInteractEvent, pal: ChestPal) {
             val chestLocation = event.clickedBlock?.location ?: return
@@ -47,6 +58,11 @@ enum class HoeType(private val material: Material) : EventActor<PlayerInteractEv
             pal.database.saveSenderLocation(chestLocation)
         }
     },
+
+    /**
+     * Receiver interaction with a chest.
+     * This is triggered whenever a new receiver chest is registered.
+     */
     RECEIVER(RECEIVER_MATERIAL) {
         override fun act(event: PlayerInteractEvent, pal: ChestPal) {
             val chestLocation = event.clickedBlock?.location ?: return
@@ -69,6 +85,9 @@ enum class HoeType(private val material: Material) : EventActor<PlayerInteractEv
     };
 
     companion object {
+        /**
+         * Attempts to find the appropriate enum based on the provided [Material].
+         */
         fun find(material: Material) = values().find { it.material == material }
     }
 }

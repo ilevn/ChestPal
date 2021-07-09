@@ -24,9 +24,9 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * The base command of the [ChestPal][tf.sou.mc.pal.ChestPal] plugin.
+ * A test command for the [ChestPal][tf.sou.mc.pal.ChestPal] plugin.
  */
-class BaseCommand : CommandExecutor {
+class TestCommand : CommandExecutor {
     override fun onCommand(
         sender: CommandSender,
         command: Command,

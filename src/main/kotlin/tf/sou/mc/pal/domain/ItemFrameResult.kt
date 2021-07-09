@@ -18,8 +18,22 @@ package tf.sou.mc.pal.domain
 
 import org.bukkit.entity.ItemFrame
 
+/**
+ * Result class for an [ItemFrame] search result.
+ */
 sealed class ItemFrameResult {
+    /**
+     * Returned when an existing [ItemFrame] is missing an item.
+     */
     object NoItem : ItemFrameResult()
+
+    /**
+     * Returned when no [ItemFrame] was found.
+     */
     object NoFrame : ItemFrameResult()
+
+    /**
+     * Returned when an [ItemFrame] with an item was found.
+     */
     data class Found(val frame: ItemFrame) : ItemFrameResult()
 }

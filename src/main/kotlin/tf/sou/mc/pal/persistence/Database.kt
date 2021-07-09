@@ -24,7 +24,32 @@ import org.bukkit.Material
  */
 interface Database {
     /**
-     * Save locations for a given [Material].
+     * Save a location for a given [Material].
      */
     fun saveMaterialLocation(material: Material, location: Location)
+
+    /**
+     * Save the [Location] of a sender chest.
+     */
+    fun saveSenderLocation(location: Location)
+
+    /**
+     * Return a set of receiver locations for a given [Material]
+     */
+    fun receiverLocationsFor(material: Material): Set<Location>
+
+    /**
+     * Return whether the provided [Location] belongs to a registered chest.
+     */
+    fun isRegisteredChest(location: Location?): Boolean
+
+    /**
+     * Return whether the provided [Location] belongs to a receiver chest.
+     */
+    fun isReceiverChest(location: Location?): Boolean
+
+    /**
+     * Return whether the provided [Location] belongs to a sender chest.
+     */
+    fun isSenderChest(location: Location?): Boolean
 }

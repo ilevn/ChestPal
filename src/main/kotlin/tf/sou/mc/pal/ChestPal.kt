@@ -18,9 +18,11 @@ package tf.sou.mc.pal
 
 import kotlin.properties.Delegates
 import org.bukkit.plugin.java.JavaPlugin
-import tf.sou.mc.pal.commands.BaseCommand
+import tf.sou.mc.pal.commands.ChestRemoveCommand
 import tf.sou.mc.pal.commands.ChestToolsCommand
+import tf.sou.mc.pal.commands.TestCommand
 import tf.sou.mc.pal.listeners.ChestListener
+import tf.sou.mc.pal.persistence.Database
 import tf.sou.mc.pal.persistence.JsonDatabase
 
 /**
@@ -28,20 +30,20 @@ import tf.sou.mc.pal.persistence.JsonDatabase
  */
 class ChestPal : JavaPlugin() {
     private val conf by lazy { config }
-    var database by Delegates.notNull<JsonDatabase>()
-
-    fun consoleMessage(content: String) = server.consoleSender.sendMessage(content)
+    var database by Delegates.notNull<Database>()
 
     override fun onEnable() {
         if (conf["enabled"] == false) {
-            consoleMessage("Chest Pal is disabled!")
+            server.consoleSender.sendMessage("Chest Pal is disabled!")
             return
         }
 
         saveDefaultConfig()
         database = JsonDatabase(dataFolder)
         server.pluginManager.registerEvents(ChestListener(this), this)
-        getCommand("chestpal")?.setExecutor(BaseCommand())
+        // Register all commands.
+        getCommand("chestpal")?.setExecutor(TestCommand())
         getCommand("chesttools")?.setExecutor(ChestToolsCommand())
+        getCommand("remchest")?.setExecutor(ChestRemoveCommand(database))
     }
 }

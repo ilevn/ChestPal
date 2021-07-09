@@ -18,8 +18,6 @@ package tf.sou.mc.pal.json
 
 import com.google.gson.GsonBuilder
 import org.bukkit.Location
-import org.bukkit.Material
-import tf.sou.mc.pal.domain.MaterialLocation
 import tf.sou.mc.pal.domain.ReceiverChests
 
 /**
@@ -29,36 +27,31 @@ object JsonSerializer {
     private val gson = GsonBuilder()
         .registerTypeAdapter(Location::class.java, LocationSerializer).create()
 
-    fun locationToJson(location: Location): String {
-        return gson.toJson(location)
-    }
-
+    /**
+     * Serialize a collection of [locations][Location] to a JSON string.
+     */
     fun locationsToJson(locations: Collection<Location>): String {
         return gson.toJson(locations)
     }
 
+    /**
+     * Deserialize a JSON string to a list.
+     */
     fun jsonToLocations(json: String): List<Location> {
         return gson.fromJson(json, Array<Location>::class.java).toList()
     }
 
-    fun jsonToLocation(json: String): Location {
-        return gson.fromJson(json, Location::class.java)
-    }
-
-    fun materialLocationsToJson(material: Material, locations: Collection<Location>): String {
-        val materialLocations = MaterialLocation(material, locations.toList())
-        return gson.toJson(materialLocations)
-    }
-
+    /**
+     * Serialize a [ReceiverChests] to a JSON string.
+     */
     fun receiverChestsToJson(chests: ReceiverChests): String {
         return gson.toJson(chests)
     }
 
+    /**
+     * Deserialize a JSON string to a [ReceiverChests].
+     */
     fun jsonToReceiverChests(json: String): ReceiverChests {
         return gson.fromJson(json, ReceiverChests::class.java)
-    }
-
-    fun jsonToMaterialLocation(json: String): MaterialLocation {
-        return gson.fromJson(json, MaterialLocation::class.java)
     }
 }

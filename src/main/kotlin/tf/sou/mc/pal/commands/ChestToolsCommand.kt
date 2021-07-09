@@ -25,6 +25,10 @@ import tf.sou.mc.pal.*
 import tf.sou.mc.pal.utils.asSingleItem
 import tf.sou.mc.pal.utils.asTextComponent
 
+/**
+ * Tool command for the [ChestPal][tf.sou.mc.pal.ChestPal] plugin.
+ * This provides the player with a sender and a receiver hoe to register new chests.
+ */
 class ChestToolsCommand : CommandExecutor {
     override fun onCommand(
         sender: CommandSender,

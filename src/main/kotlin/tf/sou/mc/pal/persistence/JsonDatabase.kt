@@ -44,19 +44,20 @@ class JsonDatabase(configDirectory: File) : Database {
         chestLocations.writeText(serializer.receiverChestsToJson(chests))
     }
 
-    fun saveSenderLocation(location: Location) {
+    override fun saveSenderLocation(location: Location) {
         locationCache.addSenderLocation(location)
         senderLocations.writeText(serializer.locationsToJson(locationCache.senderLocations))
     }
 
-    fun receiverLocationsFor(material: Material): Set<Location> =
+    override fun receiverLocationsFor(material: Material): Set<Location> =
         locationCache.receiverLocationsFor(material) ?: emptySet()
 
-    fun isRegisteredChest(location: Location?): Boolean =
+    override fun isRegisteredChest(location: Location?): Boolean =
         locationCache.isRegisteredChestLocation(location)
 
-    fun isReceiverChest(location: Location?): Boolean =
+    override fun isReceiverChest(location: Location?): Boolean =
         locationCache.isReceiverChestLocation(location)
 
-    fun isSenderChest(location: Location?): Boolean = locationCache.isSenderChestLocation(location)
+    override fun isSenderChest(location: Location?): Boolean =
+        locationCache.isSenderChestLocation(location)
 }
