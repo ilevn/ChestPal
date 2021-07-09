@@ -18,6 +18,8 @@ package tf.sou.mc.pal.listeners
 
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.conversations.ConversationFactory
+import org.bukkit.conversations.PluginNameConversationPrefix
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
@@ -27,12 +29,20 @@ import org.bukkit.inventory.Inventory
 import tf.sou.mc.pal.ChestPal
 import tf.sou.mc.pal.domain.HoeType
 import tf.sou.mc.pal.domain.ItemFrameResult
+import tf.sou.mc.pal.prompts.ChestBreakPrompt
 import tf.sou.mc.pal.utils.*
 
 /**
  * Listeners for chest based events.
  */
 class ChestListener(private val pal: ChestPal) : Listener {
+    private val conversationFactory = ConversationFactory(pal)
+        .withModality(true)
+        .withFirstPrompt(ChestBreakPrompt())
+        .withTimeout(7)
+        .withPrefix(PluginNameConversationPrefix(pal))
+        .thatExcludesNonPlayersWithMessage("No console users!")
+
     @EventHandler
     fun onInventoryCloseEvent(event: InventoryCloseEvent) {
         val inventory = event.inventory
@@ -114,8 +124,11 @@ class ChestListener(private val pal: ChestPal) : Listener {
     @EventHandler
     fun onBlockBreakEvent(event: BlockBreakEvent) {
         if (pal.database.isRegisteredChest(event.block.location)) {
-            event.player.sendMessage("You cannot break registered chests at the moment!")
-            // Prevent players from breaking registered chests.
+            conversationFactory
+                .withInitialSessionData(mapOf("block" to event.block))
+                .buildConversation(event.player)
+                .begin()
+            // Cancel the event because we delegated to the conversation handler.
             event.isCancelled = true
         }
     }

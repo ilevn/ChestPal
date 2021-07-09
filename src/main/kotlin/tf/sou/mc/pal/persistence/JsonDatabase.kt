@@ -26,10 +26,10 @@ import tf.sou.mc.pal.json.JsonSerializer
  */
 class JsonDatabase(configDirectory: File) : Database {
     private val serializer = JsonSerializer
-    private val chestLocations = configDirectory.resolve("chest_location_data.json")
+    private val receiverLocations = configDirectory.resolve("chest_location_data.json")
     private val senderLocations = configDirectory.resolve("sender_locations.json")
     private val locationCache = LocationCache.fromFiles(
-        chestLocations, senderLocations,
+        receiverLocations, senderLocations,
         serializer::jsonToLocations, serializer::jsonToReceiverChests
     )
 
@@ -41,7 +41,7 @@ class JsonDatabase(configDirectory: File) : Database {
     override fun saveMaterialLocation(material: Material, location: Location) {
         locationCache.addReceiverLocation(material, location)
         val chests = locationCache.chestLocationsToReceiverChests()
-        chestLocations.writeText(serializer.receiverChestsToJson(chests))
+        receiverLocations.writeText(serializer.receiverChestsToJson(chests))
     }
 
     override fun saveSenderLocation(location: Location) {
@@ -60,4 +60,15 @@ class JsonDatabase(configDirectory: File) : Database {
 
     override fun isSenderChest(location: Location?): Boolean =
         locationCache.isSenderChestLocation(location)
+
+    override fun removeLocation(location: Location): Boolean {
+        if (!locationCache.removeLocation(location)) {
+            return false
+        }
+        // Location was actually removed.
+        val chests = locationCache.chestLocationsToReceiverChests()
+        receiverLocations.writeText(serializer.receiverChestsToJson(chests))
+        senderLocations.writeText(serializer.locationsToJson(locationCache.senderLocations))
+        return true
+    }
 }

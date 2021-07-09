@@ -56,6 +56,7 @@ fun PlayerEvent.reply(content: String) = player.sendMessage(content)
  */
 fun Location.findItemFrame(): ItemFrameResult {
     val possibleFrames = getNearbyEntitiesByType(ItemFrame::class.java, 2.0)
+    // FIXME: Chests without item frames are going to steal the neighboring item frame.
     if (possibleFrames.isEmpty()) {
         // oh oh.
         return ItemFrameResult.NoFrame

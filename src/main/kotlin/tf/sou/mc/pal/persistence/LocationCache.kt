@@ -25,13 +25,13 @@ import tf.sou.mc.pal.domain.ReceiverChests
 /**
  * Cache class to facilitate interactions between the json layer and [Location] objects.
  */
-class LocationCache(receiverChests: ReceiverChests, senderLocations: List<Location>) {
-    private val chestLocations = receiverChests
+class LocationCache(receivers: ReceiverChests, senderLocations: List<Location>) {
+    private val receiverChests = receivers
         .data.associate { it.material to it.receivers.toMutableSet() }.toMutableMap()
     internal val senderLocations = senderLocations.toMutableSet()
-    private var cachedChestLocations = chestLocations.values.flatten()
+    private var cachedChestLocations = receiverChests.values.flatten()
 
-    internal fun receiverLocationsFor(material: Material): Set<Location>? = chestLocations[material]
+    internal fun receiverLocationsFor(material: Material): Set<Location>? = receiverChests[material]
 
     internal fun isSenderChestLocation(location: Location?): Boolean = location in senderLocations
 
@@ -42,13 +42,24 @@ class LocationCache(receiverChests: ReceiverChests, senderLocations: List<Locati
         isSenderChestLocation(location) || location in cachedChestLocations
 
     internal fun chestLocationsToReceiverChests(): ReceiverChests {
-        val materialChests = chestLocations.map { MaterialLocation(it.key, it.value.toList()) }
+        val materialChests = receiverChests.map { MaterialLocation(it.key, it.value.toList()) }
         return ReceiverChests(materialChests)
     }
 
+    internal fun removeLocation(location: Location): Boolean {
+        if (senderLocations.remove(location)) {
+            return true
+        }
+        if (receiverChests.entries.removeIf { it.value.contains(location) }) {
+            cachedChestLocations = receiverChests.values.flatten()
+            return true
+        }
+        return false
+    }
+
     internal fun addReceiverLocation(material: Material, location: Location): Boolean {
-        val result = chestLocations.computeIfAbsent(material) { mutableSetOf() }.add(location)
-        cachedChestLocations = chestLocations.values.flatten()
+        val result = receiverChests.computeIfAbsent(material) { mutableSetOf() }.add(location)
+        cachedChestLocations = receiverChests.values.flatten()
         return result
     }
 

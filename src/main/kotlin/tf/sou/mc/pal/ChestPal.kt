@@ -18,7 +18,6 @@ package tf.sou.mc.pal
 
 import kotlin.properties.Delegates
 import org.bukkit.plugin.java.JavaPlugin
-import tf.sou.mc.pal.commands.ChestRemoveCommand
 import tf.sou.mc.pal.commands.ChestToolsCommand
 import tf.sou.mc.pal.commands.TestCommand
 import tf.sou.mc.pal.listeners.ChestListener
@@ -44,6 +43,5 @@ class ChestPal : JavaPlugin() {
         // Register all commands.
         getCommand("chestpal")?.setExecutor(TestCommand())
         getCommand("chesttools")?.setExecutor(ChestToolsCommand())
-        getCommand("remchest")?.setExecutor(ChestRemoveCommand(database))
     }
 }
