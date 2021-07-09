@@ -20,6 +20,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Material.AIR
+import org.bukkit.Material.CHEST
 import org.bukkit.block.Container
 import org.bukkit.entity.ItemFrame
 import org.bukkit.event.player.PlayerEvent
