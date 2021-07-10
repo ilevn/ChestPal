@@ -10,7 +10,7 @@ These then send all items off to their respective receiver chests.
 
 ## Building
 
-ChestPal uses Gradle to manage all of its dependencies and building the jar file.
+ChestPal uses Gradle to manage all of its dependencies and for building the jar file.
 
 #### Requirements
 
