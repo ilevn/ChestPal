@@ -16,6 +16,7 @@
  */
 package tf.sou.mc.pal.commands
 
+import org.bukkit.ChatColor
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -39,6 +40,11 @@ class ChestToolsCommand : CommandExecutor {
         if (sender !is Player) {
             sender.sendMessage("You need to invoke this command from a player account!")
             return false
+        }
+
+        if (!sender.hasPermission("chestpal.chesttools")) {
+            sender.sendMessage("${ChatColor.RED}You do not have access to this command!")
+            return true
         }
 
         createTools().toList().forEach { sender.inventory.addItem(it) }
