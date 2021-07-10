@@ -17,11 +17,13 @@
 package tf.sou.mc.pal.utils
 
 import net.kyori.adventure.text.Component
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Material.CHEST
 import org.bukkit.block.Container
 import org.bukkit.entity.ItemFrame
+import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -119,3 +121,8 @@ fun Enum<*>.toPrettyString(): String {
  * Converts this inventory to a proxied, double-chest aware version.
  */
 fun Inventory.toChestInventoryProxy() = ChestInventoryProxy(this)
+
+/**
+ * Sends a player message in red.
+ */
+fun Player.redMessage(content: String) = sendMessage("${ChatColor.RED}$content")

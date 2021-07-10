@@ -26,8 +26,7 @@ import tf.sou.mc.pal.ChestPal
  * Prompt for [org.bukkit.event.block.BlockBreakEvent].
  * This takes care of deciding whether a chest should be deleted from the system or not.
  */
-class ChestBreakPrompt :
-    BooleanPrompt() {
+class ChestBreakPrompt : BooleanPrompt() {
     override fun getPromptText(context: ConversationContext): String {
         return "Do you want to remove this chest from the system?"
     }

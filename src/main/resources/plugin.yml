@@ -1,32 +1,40 @@
 name: ChestPal
 main: tf.sou.mc.pal.ChestPal
-version: 0.1.0
+version: 1.0.0
 api-version: 1.17
 author: Nils T.
 
 
 commands:
-  chestpal:
-    description: Test command for now
-    usage: /chestpal
-    permission: chestpal.dirttest
+    chestpal:
+        description: Test command for now
+        usage: /chestpal
+        permission: chestpal.dirttest
 
-  chesttools:
-    description: Get receiver and sender tools
-    usage: /chesttools
-    permission: chestpal.chesttools
+    chesttools:
+        description: Get receiver and sender tools
+        usage: /chesttools
+        permission: chestpal.chesttools
 
 permissions:
-  chestpal.dirttest:
-    description: Allows access to test command
-    default: op
+    chestpal.dirttest:
+        description: Grants access to the test command
+        default: op
 
-  chestpal.chesttools:
-    description: Allows access to chesttool command
-    default: op
+    chestpal.chesttools:
+        description: Grants access to the chesttool command
+        default: op
 
-  chestpal.*:
-    description: Wildcard access to all chestpal commands
-    default: op
+    chestpal.use:
+        description: Grants access to receiver and sender chest functionality
+        default: not op
+
+    chestpal.remove_chest:
+        description: Allows players to destroy receiver or sender chests.
+        default: op
+
+    chestpal.*:
+        description: Wildcard access to all chestpal commands
+        default: op
 
 

@@ -16,13 +16,13 @@
  */
 package tf.sou.mc.pal.commands
 
-import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import tf.sou.mc.pal.utils.redMessage
 
 /**
  * A test command for the [ChestPal][tf.sou.mc.pal.ChestPal] plugin.
@@ -40,7 +40,7 @@ class TestCommand : CommandExecutor {
         }
 
         if (!sender.hasPermission("chestpal.chestpal")) {
-            sender.sendMessage("${ChatColor.RED}You do not have access to this command!")
+            sender.redMessage("You do not have access to this command!")
             return true
         }
 

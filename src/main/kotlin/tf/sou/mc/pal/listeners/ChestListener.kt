@@ -90,7 +90,7 @@ class ChestListener(private val pal: ChestPal) : Listener {
             }
 
             (amount - transportAmount).takeIf { it > 0 }
-                ?.let { event.player.sendMessage("Moved $it ${material.name}s!") }
+                ?.let { event.player.sendMessage("Moved ${material.toPrettyString()} (x$it)") }
         }
     }
 
@@ -133,6 +133,12 @@ class ChestListener(private val pal: ChestPal) : Listener {
         val container = event.block.location.resolveContainer() ?: return
         val proxy = container.inventory.toChestInventoryProxy()
         if (proxy.isRegistered(pal.database)) {
+            val player = event.player
+            if (!player.hasPermission("chestpal.remove_chest")) {
+                event.isCancelled = true
+                player.redMessage("You are not allowed to break registered chests!")
+                return
+            }
             conversationFactory
                 .withInitialSessionData(mapOf("block" to event.block))
                 .buildConversation(event.player)
