@@ -51,8 +51,8 @@ fun PlayerEvent.reply(content: String) = player.sendMessage(content)
 /**
  * Attempts to find the appropriate [ItemFrame] for a chest location.
  *
- * @see ItemFrameResult
  * _Note: This performs an expensive distance calculation to find the correct chest._
+ * @see ItemFrameResult
  */
 fun Location.findItemFrame(): ItemFrameResult {
     val box = block.boundingBox.expand(0.1)
@@ -87,17 +87,17 @@ fun Location.resolveContainer(): Container? {
  */
 fun Int.asItemStacks(material: Material): List<ItemStack> {
     val size = material.maxStackSize
-    val fullStacks = this / size
-    return (1..fullStacks).map { ItemStack(material, size) } + ItemStack(material, this % size)
+    val chunks = (1..this / size).map { ItemStack(material, size) }
+    return (this % size).takeIf { it != 0 }?.let { chunks + ItemStack(material, it) } ?: chunks
 }
 
 /**
- * Counts the amount of available space in a container.
+ * Counts the amount of available space in an inventory.
  * This is based on the maximum stack size of the provided [Material].
  */
-fun Container.countAvailableSpace(item: Material): Int {
+fun Inventory.countAvailableSpace(item: Material): Int {
     val maxSize = item.maxStackSize
-    return inventory.contents.sumOf { if (it == null) maxSize else maxSize - it.amount }
+    return contents.sumOf { if (it == null) maxSize else maxSize - it.amount }
 }
 
 /**

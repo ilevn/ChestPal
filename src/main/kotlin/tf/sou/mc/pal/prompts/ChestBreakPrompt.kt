@@ -24,7 +24,7 @@ import tf.sou.mc.pal.ChestPal
 
 /**
  * Prompt for [org.bukkit.event.block.BlockBreakEvent].
- * This takes care deciding whether a chest should be deleted from the system or not.
+ * This takes care of deciding whether a chest should be deleted from the system or not.
  */
 class ChestBreakPrompt :
     BooleanPrompt() {

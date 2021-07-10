@@ -77,7 +77,7 @@ class ChestListener(private val pal: ChestPal) : Listener {
                     iterator.next().resolveContainer() ?: error("Unable to find receiver chest!")
                 // Check how much space this container has
                 // and calculate how many items we are allowed to add.
-                val available = chest.countAvailableSpace(material)
+                val available = chest.inventory.countAvailableSpace(material)
                 val allowedToAdd = available.coerceAtMost(transportAmount)
                 allowedToAdd.asItemStacks(material).forEach { chest.inventory.addItem(it) }
                 transportAmount -= allowedToAdd

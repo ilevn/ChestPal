@@ -24,7 +24,7 @@ import tf.sou.mc.pal.ChestPal
  */
 interface EventActor<E : Event> {
     /**
-     * Respond to an [event][E] with an action.
+     * Responds to an [event][E] with an action.
      * This has access to the [ChestPal] plugin state.
      */
     fun act(event: E, pal: ChestPal)

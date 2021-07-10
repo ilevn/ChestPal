@@ -35,7 +35,7 @@ class ChestInventoryProxy(private val inventory: Inventory) {
     }
 
     /**
-     * Check whether this proxy is a registered chest.
+     * Checks whether this proxy is a registered chest.
      *
      * @see Database.isRegisteredChest
      */
@@ -44,7 +44,7 @@ class ChestInventoryProxy(private val inventory: Inventory) {
     }
 
     /**
-     * Check whether this proxy is a receiver chest.
+     * Checks whether this proxy is a receiver chest.
      *
      * @see Database.isReceiverChest
      */
@@ -53,7 +53,7 @@ class ChestInventoryProxy(private val inventory: Inventory) {
     }
 
     /**
-     * Check whether this proxy is a sender chest.
+     * Checks whether this proxy is a sender chest.
      *
      * @see Database.isSenderChest
      */

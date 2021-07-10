@@ -28,28 +28,28 @@ object JsonSerializer {
         .registerTypeAdapter(Location::class.java, LocationSerializer).create()
 
     /**
-     * Serialize a collection of [locations][Location] to a JSON string.
+     * Serializes a collection of [locations][Location] to a JSON string.
      */
     fun locationsToJson(locations: Collection<Location>): String {
         return gson.toJson(locations)
     }
 
     /**
-     * Deserialize a JSON string to a list.
+     * Deserializes a JSON string to a list.
      */
     fun jsonToLocations(json: String): List<Location> {
         return gson.fromJson(json, Array<Location>::class.java).toList()
     }
 
     /**
-     * Serialize a [ReceiverChests] to a JSON string.
+     * Serializes a [ReceiverChests] to a JSON string.
      */
     fun receiverChestsToJson(chests: ReceiverChests): String {
         return gson.toJson(chests)
     }
 
     /**
-     * Deserialize a JSON string to a [ReceiverChests].
+     * Deserializes a JSON string to a [ReceiverChests].
      */
     fun jsonToReceiverChests(json: String): ReceiverChests {
         return gson.fromJson(json, ReceiverChests::class.java)
