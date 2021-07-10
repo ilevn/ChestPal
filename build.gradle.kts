@@ -15,10 +15,15 @@ repositories {
 }
 
 dependencies {
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.0")
     compileOnly("io.papermc.paper:paper-api:1.17-R0.1-SNAPSHOT")
+    testImplementation(kotlin("test-junit5"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.7.0")
+    testImplementation("org.assertj:assertj-core:3.11.1")
+}
+
+configurations {
+    testImplementation.get().extendsFrom(compileOnly.get())
 }
 
 tasks.test {
