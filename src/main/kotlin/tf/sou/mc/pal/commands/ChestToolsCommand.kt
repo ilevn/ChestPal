@@ -22,9 +22,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import tf.sou.mc.pal.*
-import tf.sou.mc.pal.utils.asSingleItem
-import tf.sou.mc.pal.utils.asTextComponent
+import tf.sou.mc.pal.utils.*
 
 /**
  * Tool command for the [ChestPal][tf.sou.mc.pal.ChestPal] plugin.

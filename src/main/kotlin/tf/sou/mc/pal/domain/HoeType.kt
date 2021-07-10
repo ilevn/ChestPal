@@ -19,8 +19,6 @@ package tf.sou.mc.pal.domain
 import org.bukkit.Material
 import org.bukkit.event.player.PlayerInteractEvent
 import tf.sou.mc.pal.ChestPal
-import tf.sou.mc.pal.RECEIVER_MATERIAL
-import tf.sou.mc.pal.SENDER_MATERIAL
 import tf.sou.mc.pal.utils.*
 
 /**
