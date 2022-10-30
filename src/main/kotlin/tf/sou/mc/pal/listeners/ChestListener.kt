@@ -110,12 +110,8 @@ class ChestListener(private val pal: ChestPal) : Listener {
         }
         // Clean up.
         badItems.forEach {
-            if (it != null) {
-                inventory.remove(it)
-            }
-            if (it != null) {
-                event.player.inventory.addItem(it)
-            }
+            inventory.remove(it)
+            event.player.inventory.addItem(it)         
         }
         event.player.sendMessage("This receiver chest only takes ${allowedItem.toPrettyString()}!")
     }

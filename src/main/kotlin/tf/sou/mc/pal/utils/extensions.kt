@@ -105,8 +105,12 @@ fun Inventory.countAvailableSpace(item: Material): Int {
 /**
  * Attempts to find items in an inventory that differ from the provided [Material].
  */
-fun Inventory.findBadItems(allowed: Material): List<ItemStack?> {
-    return contents.filter { it != null && it.type != allowed }
+fun Inventory.findBadItems(allowed: Material): List<ItemStack> {
+    val filteredInventory = mutableListOf<ItemStack>()
+    for (item in contents) {
+        if (item != null && item.type != allowed) filteredInventory.add(item)
+    }
+    return filteredInventory
 }
 
 /**
