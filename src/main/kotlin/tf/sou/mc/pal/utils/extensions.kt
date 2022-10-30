@@ -87,10 +87,10 @@ fun Location.resolveContainer(): Container? {
  * Partitions this integer into a list of item stacks based
  * on the maximum stack size of the provided [Material].
  */
-fun Int.asItemStacks(material: Material): List<ItemStack> {
+fun Int.asItemStacks(material: ItemStack): List<ItemStack> {
     val size = material.maxStackSize
-    val chunks = (1..this / size).map { ItemStack(material, size) }
-    return (this % size).takeIf { it != 0 }?.let { chunks + ItemStack(material, it) } ?: chunks
+    val chunks = (1..this / size).map { material.amount = size ; material}
+    return (this % size).takeIf { it != 0 }?.let {material.amount=it ; chunks + material } ?: chunks
 }
 
 /**
@@ -105,7 +105,7 @@ fun Inventory.countAvailableSpace(item: Material): Int {
 /**
  * Attempts to find items in an inventory that differ from the provided [Material].
  */
-fun Inventory.findBadItems(allowed: Material): List<ItemStack> {
+fun Inventory.findBadItems(allowed: Material): List<ItemStack?> {
     return contents.filter { it != null && it.type != allowed }
 }
 

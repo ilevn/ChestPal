@@ -16,6 +16,7 @@
  */
 package tf.sou.mc.pal.listeners
 
+
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.conversations.ConversationFactory
@@ -26,6 +27,7 @@ import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import tf.sou.mc.pal.ChestPal
 import tf.sou.mc.pal.domain.HoeType
 import tf.sou.mc.pal.domain.ItemFrameResult
@@ -60,13 +62,13 @@ class ChestListener(private val pal: ChestPal) : Listener {
             return
         }
 
-        val chestItems = inventory.contents
-            .filterNotNull().groupingBy { it.type }
-            .fold(0) { acc, stack -> acc + stack.amount }
 
-        for ((material, amount) in chestItems) {
-            var transportAmount = amount
-            val receiverChests = pal.database.receiverLocationsFor(material)
+        val chestItems = inventory.contents
+            .filterNotNull()
+
+        for (material in chestItems) {
+            var transportAmount = material.amount
+            val receiverChests = pal.database.receiverLocationsFor(material.type)
             if (receiverChests.isEmpty()) {
                 continue
             }
@@ -77,7 +79,7 @@ class ChestListener(private val pal: ChestPal) : Listener {
                     iterator.next().resolveContainer() ?: error("Unable to find receiver chest!")
                 // Check how much space this container has
                 // and calculate how many items we are allowed to add.
-                val available = chest.inventory.countAvailableSpace(material)
+                val available = chest.inventory.countAvailableSpace(material.type)
                 val allowedToAdd = available.coerceAtMost(transportAmount)
                 allowedToAdd.asItemStacks(material).forEach { chest.inventory.addItem(it) }
                 transportAmount -= allowedToAdd
@@ -89,8 +91,8 @@ class ChestListener(private val pal: ChestPal) : Listener {
                 transportAmount.asItemStacks(material).forEach { eventChest.inventory.addItem(it) }
             }
 
-            (amount - transportAmount).takeIf { it > 0 }
-                ?.let { event.player.sendMessage("Moved ${material.toPrettyString()} (x$it)") }
+            (material.amount - transportAmount).takeIf { it > 0 }
+                ?.let { event.player.sendMessage("Moved ${material.type.toPrettyString()} (x$it)") }
         }
     }
 
@@ -108,8 +110,12 @@ class ChestListener(private val pal: ChestPal) : Listener {
         }
         // Clean up.
         badItems.forEach {
-            inventory.remove(it)
-            event.player.inventory.addItem(it)
+            if (it != null) {
+                inventory.remove(it)
+            }
+            if (it != null) {
+                event.player.inventory.addItem(it)
+            }
         }
         event.player.sendMessage("This receiver chest only takes ${allowedItem.toPrettyString()}!")
     }
